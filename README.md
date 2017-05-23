@@ -1,8 +1,23 @@
 # Log Analysis
 
 This is my submission to the Logs Analysis Project for the Full Stack
-Engineering Nanodegree at Udacity. The report script is available at
-`report.py`.
+Engineering Nanodegree at Udacity. The report tool is available at
+`report.py`. The tool answers these three questions:
+
+  1. What are the most popular three articles of all time?
+  2. Who are the most popular article authors of all time?
+  3. On which days did more than 1% of requests lead to errors?
+
+The program is designed as a simple command line tool with fixed
+functionality. The tool accepts as arguments the PosgreSQL hostname, port
+number, username, password, database, and a limit for the number of results
+returned for the last two questions.
+
+The SQL queries were designed to make the most deeply nested queries also
+the most restrictive. By restricting the most nested and earliest queries,
+we minimize the amount of work done by the database. Likewise, inner and
+outer join options are specified to further constrain the query.
+
 
 ## Usage
 
@@ -21,6 +36,7 @@ optional arguments:
   --database DATABASE  PostgreSQL database (default: news)
   --limit LIMIT        Limit number of results for each sub-report
 ```
+
 
 ## Example output
 
