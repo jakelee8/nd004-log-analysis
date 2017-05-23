@@ -1,0 +1,18 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:9.5-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=vagrant
+  client:
+    build:
+      context: .
+    environment:
+      - POSTGRES_USER=vagrant
+    volumes:
+      - .:/data
+    links:
+      - postgres
+
