@@ -34,7 +34,7 @@ SELECT id, name, views FROM (
       GROUP BY path
     ) AS article_views
     INNER JOIN articles
-    ON article_views.path = concat('/article/', articles.slug)
+    ON substring(article_views.path, 10) = articles.slug
     GROUP BY author
   ) AS author_views
   INNER JOIN authors
