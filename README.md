@@ -40,11 +40,77 @@ optional arguments:
 
 ## Example output
 
-While `report.py` will work in the [Vagrant][vagrant]
-[environment][vagrant-env], this example report was generated using
-[Docker Compose][docker-compose]. This guide assumes that you have already
-installed and configured Docker for use with Docker Compose. All commands
-are run from the project root directory.
+### Option 1: Udacity Full Stack Engineering Nanodegree Virtual Machine
+
+For your convenience, the Udacity Virtual Machine files have been added as
+a Git submodule. Issue the following command to download it.
+
+```sh
+git submodule update --init
+```
+
+Change into the [Vagrant][vagrant] directory, download and extract the news
+data file, and copy the report script.
+
+```sh
+# Change into the Vagrant directory
+cd fullstack-nanodegree-vm/vagrant
+
+# Download the news data file
+curl -LO https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip
+
+# Extract the news data
+unzip newsdata.zip
+
+# Copy the report script
+cp ../../report.py .
+```
+
+Use Vagrant to build and start the virtual machine.
+
+```sh
+vagrant up
+vagrant ssh
+```
+
+Once inside the virtual machine, issue the following commands to set up the
+database.
+
+```sh
+vagrant@vagrant:~$ psql -U vagrant -d news -f /vagrant/newsdata.sql
+...
+vagrant@vagrant:~$ python3 /vagrant/report.py --user '' --host ''
+Connecting to postgresql://:5432/news
+
+The most popular three articles of all time:
+  Bad things gone, say good people (170098 views)
+  Bears love berries, alleges bear (253801 views)
+  Candidate is jerk, alleges rival (338647 views)
+
+The most popular article authors of all time:
+  Ursula La Multa (507594 views)
+  Rudolf von Treppenwitz (423457 views)
+  Anonymous Contributor (170098 views)
+  Markoff Chaney (84557 views)
+
+Days with more than 1% of requests leading to errors:
+  2016-07-17 (2.26% error)
+
+vagrant@vagrant:~$ exit
+```
+
+Issue the following commands to shutdown and remote the virtual machine.
+
+```sh
+vagrant destroy
+```
+
+
+### Option 2: Docker Compose
+
+This guide assumes that you have already installed and configured Docker for
+use with [Docker Compose][docker-compose]. All commands are run from the project root
+directory.
 
 The first command uses Docker Compose to build and start the PostgreSQL
 server in the background.
@@ -67,6 +133,17 @@ $ docker-compose run --rm client
 /data $
 ```
 
+To start a PostgresQL shell, issue the following command.
+
+```sh
+# Start PostgreSQL shell with news database selected
+/data $ psql -h postgres -U vagrant -d news
+psql (9.6.2, server 9.5.7)
+Type "help" for help.
+
+news=# exit
+```
+
 Once inside the client shell, issue the following commands to set up the
 database. Remember to [download][] the `newsdata.zip` file to extract
 `newsdata.sql` beforehand.
@@ -81,13 +158,6 @@ EOL
 # Import log analysis sql data
 /data $ psql -h postgres -U vagrant -d news -f newsdata.sql
 ...
-
-# Start PostgreSQL shell with news database selected
-/data $ psql -h postgres -U vagrant -d news
-psql (9.6.2, server 9.5.7)
-Type "help" for help.
-
-news=# exit
 ```
 
 The database is now ready to be analyzed. The following command runs the
@@ -116,8 +186,10 @@ Days with more than 1% of requests leading to errors:
 /data $ exit
 ```
 
-The database and data will remain available until it is destroyed with the
-next command.
+The database and data will remain available until it is destroyed. Exit the
+Docker client shell started with `docker-compose run --rm client` to return
+to the host. Issue the following command to stop and destroy the Docker
+Compose services.
 
 ```sh
 $ docker-compose down
